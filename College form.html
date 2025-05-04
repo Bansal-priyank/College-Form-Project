@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Final Year Form - PeerConnect</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0f7fa, #fff3e0);
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    header {
+      background-color: #00695c;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    header h1 {
+      font-size: 2.7em;
+      letter-spacing: 1px;
+    }
+    .form-section, .search-section, .profiles-section {
+      background-color: #ffffff;
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 750px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border: 2px solid #b2dfdb;
+      transition: all 0.3s ease;
+    }
+    .form-section:hover, .search-section:hover, .profiles-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+    h2 {
+      color: #00695c;
+      margin-bottom: 25px;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    label {
+      font-weight: bold;
+      color: #333;
+    }
+    input, textarea, button {
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+    input:focus, textarea:focus {
+      border-color: #00695c;
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 105, 92, 0.3);
+    }
+    button {
+      background-color: #00695c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background-color: #004d40;
+      transform: scale(1.03);
+    }
+    .profile-card {
+      border: 2px dashed #b2dfdb;
+      padding: 20px;
+      margin-top: 15px;
+      border-radius: 12px;
+      background-color: #fafafa;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .profile-card:hover {
+      box-shadow: 0 10px 20px rgba(0, 105, 92, 0.1);
+      transform: scale(1.02);
+    }
+    .search-section input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Final Year Form</h1>
+    <p>Connect with fellow final-year students!</p>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>Add Your Profile</h2>
+      <form id="profileForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Your Name" required />
+
+        <label for="admission">Admission Number:</label>
+        <input type="text" id="admission" placeholder="Admission Number" required />
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" placeholder="Phone Number" required />
+
+        <label for="semester">Semester:</label>
+        <input type="text" id="semester" placeholder="Semester" required />
+
+        <label for="session">Session Year:</label>
+        <input type="text" id="session" placeholder="2024-25" required />
+
+        <label for="branch">Branch:</label>
+        <input type="text" id="branch" placeholder="Branch" required />
+
+        <label for="project">Project Title:</label>
+        <input type="text" id="project" placeholder="Project Title" required />
+
+        <label for="subject">Subject of Interest:</label>
+        <input type="text" id="subject" placeholder="Subject of Interest" required />
+
+        <label for="help">Help Needed:</label>
+        <input type="text" id="help" placeholder="What help do you need?" required />
+
+        <label for="comments">Additional Comments:</label>
+        <textarea id="comments" rows="4" placeholder="Any extra notes..."></textarea>
+
+        <button type="submit">Add Profile</button>
+      </form>
+    </section>
+
+    <section class="search-section">
+      <h2>Search Profiles</h2>
+      <input type="text" id="searchInput" placeholder="Search by subject or branch..." />
+    </section>
+
+    <section class="profiles-section">
+      <h2>All Profiles</h2>
+      <div id="profileList"></div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("profileForm");
+    const profileList = document.getElementById("profileList");
+    const searchInput = document.getElementById("searchInput");
+
+    let profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+
+    function renderProfiles(data) {
+      profileList.innerHTML = "";
+      if (data.length === 0) {
+        profileList.innerHTML = "<p>No profiles found.</p>";
+        return;
+      }
+      data.forEach((profile) => {
+        const div = document.createElement("div");
+        div.className = "profile-card";
+        div.style.opacity = 0;
+        div.innerHTML = `
+          <h3>${profile.name}</h3>
+          <p><strong>Admission No:</strong> ${profile.admission}</p>
+          <p><strong>Phone:</strong> ${profile.phone}</p>
+          <p><strong>Semester:</strong> ${profile.semester}</p>
+          <p><strong>Session:</strong> ${profile.session}</p>
+          <p><strong>Branch:</strong> ${profile.branch}</p>
+          <p><strong>Project:</strong> ${profile.project}</p>
+          <p><strong>Subject:</strong> ${profile.subject}</p>
+          <p><strong>Help Needed:</strong> ${profile.help}</p>
+          <p><strong>Comments:</strong> ${profile.comments || "-"}</p>
+          <button class="connectBtn">Connect</button>
+        `;
+        div.querySelector(".connectBtn").addEventListener("click", () => {
+          alert(`🎉 Connection Request Sent to ${profile.name}!`);
+        });
+        profileList.appendChild(div);
+        setTimeout(() => div.style.opacity = 1, 100);
+      });
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const newProfile = {
+        name: form.name.value.trim(),
+        admission: form.admission.value.trim(),
+        phone: form.phone.value.trim(),
+        semester: form.semester.value.trim(),
+        session: form.session.value.trim(),
+        branch: form.branch.value.trim(),
+        project: form.project.value.trim(),
+        subject: form.subject.value.trim(),
+        help: form.help.value.trim(),
+        comments: form.comments.value.trim(),
+      };
+      if (Object.values(newProfile).some(v => !v)) {
+        alert("Please fill out all fields.");
+        return;
+      }
+      profiles.push(newProfile);
+      localStorage.setItem("profiles", JSON.stringify(profiles));
+      renderProfiles(profiles);
+      form.reset();
+    });
+
+    searchInput.addEventListener("input", function () {
+      const searchTerm = searchInput.value.toLowerCase();
+      const filtered = profiles.filter(p =>
+        p.subject.toLowerCase().includes(searchTerm) ||
+        p.branch.toLowerCase().includes(searchTerm)
+      );
+      renderProfiles(filtered);
+    });
+
+    renderProfiles(profiles);
+  </script>
+</body>
+</html>
+
+
